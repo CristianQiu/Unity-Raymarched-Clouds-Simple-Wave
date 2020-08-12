@@ -8,6 +8,7 @@ public class Sphere : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private Slider scatteringSlider;
+
     [SerializeField] private Slider densitySlider;
     [SerializeField] private Slider coverageSlider;
     [SerializeField] private Slider sunSpeedSlider;
@@ -16,6 +17,7 @@ public class Sphere : MonoBehaviour
 
     [Header("Components")]
     [SerializeField] private Transform sun = null;
+
     [SerializeField] private PostProcessLayer ppLayer = null;
     [SerializeField] private Transform sphere = null;
 
@@ -30,20 +32,7 @@ public class Sphere : MonoBehaviour
     private int coverageId = -1;
     private int jitterId = -1;
 
-    // old stuff
-    //private float absortion = 20.0f;
-    //private float outScattering = 0.2f;
-    //private float density = 0.04f;
-    //private float coverage = 0.42f;
-    //private float sunRotSpeed = 10.0f;
-
-    //absortion = GUI.HorizontalSlider(SetRectParams(rect, 25.0f, 125.0f, 200.0f, 40.0f), absortion, 0.0f, 20.0f);
-    //outScattering = GUI.HorizontalSlider(SetRectParams(rect, 25.0f, 225.0f, 200.0f, 40.0f), outScattering, 0.0f, 20.0f);
-    //density = GUI.HorizontalSlider(SetRectParams(rect, 25.0f, 325.0f, 200.0f, 40.0f), density, 0.0f, 0.1f);
-    //coverage = GUI.HorizontalSlider(SetRectParams(rect, 25.0f, 425.0f, 200.0f, 40.0f), coverage, 0.25f, 0.5f);
-    //sunRotSpeed = GUI.HorizontalSlider(SetRectParams(rect, 25.0f, 525.0f, 200.0f, 40.0f), sunRotSpeed, 0.0f, 50.0f);
-
-    private void Start ()
+    private void Start()
     {
         raymarchMat = GetComponent<MeshRenderer>().sharedMaterial;
 
