@@ -42,7 +42,7 @@ MonoBehaviour:
     overrideState: 1
     value: 0.05
   fastMode:
-    overrideState: 0
+    overrideState: 1
     value: 0
 --- !u!114 &114305522751741656
 MonoBehaviour:
@@ -125,7 +125,7 @@ MonoBehaviour:
     value: 1
   temperature:
     overrideState: 0
-    value: 0
+    value: -9.1
   tint:
     overrideState: 0
     value: 0
@@ -1404,7 +1404,7 @@ MonoBehaviour:
     value: 360
   sampleCount:
     overrideState: 1
-    value: 32
+    value: 16
 --- !u!114 &114828819232897810
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1443,7 +1443,7 @@ MonoBehaviour:
     overrideState: 1
     value: {r: 1, g: 1, b: 1, a: 1}
   fastMode:
-    overrideState: 0
+    overrideState: 1
     value: 0
   dirtTexture:
     overrideState: 0

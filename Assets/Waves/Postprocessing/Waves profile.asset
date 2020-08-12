@@ -71,7 +71,7 @@ MonoBehaviour:
     overrideState: 1
     value: 0.25
   fastMode:
-    overrideState: 1
+    overrideState: 0
     value: 1
 --- !u!114 &-2967482070545755955
 MonoBehaviour:
@@ -212,7 +212,7 @@ MonoBehaviour:
     value: 0
   postExposure:
     overrideState: 1
-    value: 1
+    value: 0.5
   contrast:
     overrideState: 0
     value: 0
