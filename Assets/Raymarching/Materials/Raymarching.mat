@@ -24,7 +24,7 @@ Material:
     - _Amplitude: 0.5
     - _Coverage: 0.44
     - _Density: 0.03
-    - _FrameCount: 4
+    - _FrameCount: 2
     - _Frequency: 3
     - _JitterEnabled: 1
     - _Lacunarity: 3
