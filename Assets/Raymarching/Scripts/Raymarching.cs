@@ -4,16 +4,16 @@ using UnityEngine.UI;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshRenderer))]
-public class Sphere : MonoBehaviour
+public class Raymarching : MonoBehaviour
 {
     [Header("UI")]
-    [SerializeField] private Slider scatteringSlider;
+    [SerializeField] private Slider scatteringSlider = null;
 
-    [SerializeField] private Slider densitySlider;
-    [SerializeField] private Slider coverageSlider;
-    [SerializeField] private Slider sunSpeedSlider;
-    [SerializeField] private Slider jitterSlider;
-    [SerializeField] private Toggle taaToggle;
+    [SerializeField] private Slider densitySlider = null;
+    [SerializeField] private Slider coverageSlider = null;
+    [SerializeField] private Slider sunSpeedSlider = null;
+    [SerializeField] private Slider jitterSlider = null;
+    [SerializeField] private Toggle taaToggle = null;
 
     [Header("Components")]
     [SerializeField] private Transform sun = null;
@@ -23,27 +23,18 @@ public class Sphere : MonoBehaviour
 
     private Material raymarchMat = null;
 
-    private int posId = -1;
-    private int radiusId = -1;
-    private int frameCountId = -1;
-    private int absortionId = -1;
-    private int outScatteringId = -1;
-    private int densityId = -1;
-    private int coverageId = -1;
-    private int jitterId = -1;
+    private readonly int posId = Shader.PropertyToID("_SpherePos");
+    private readonly int radiusId = Shader.PropertyToID("_SphereRadius");
+    private readonly int frameCountId = Shader.PropertyToID("_FrameCount");
+    private readonly int absortionId = Shader.PropertyToID("_Absortion");
+    private readonly int outScatteringId = Shader.PropertyToID("_OutScattering");
+    private readonly int densityId = Shader.PropertyToID("_Density");
+    private readonly int coverageId = Shader.PropertyToID("_Coverage");
+    private readonly int jitterId = Shader.PropertyToID("_JitterEnabled");
 
     private void Start()
     {
         raymarchMat = GetComponent<MeshRenderer>().sharedMaterial;
-
-        absortionId = Shader.PropertyToID("_Absortion");
-        outScatteringId = Shader.PropertyToID("_OutScattering");
-        densityId = Shader.PropertyToID("_Density");
-        coverageId = Shader.PropertyToID("_Coverage");
-        jitterId = Shader.PropertyToID("_JitterEnabled");
-        posId = Shader.PropertyToID("_SpherePos");
-        radiusId = Shader.PropertyToID("_SphereRadius");
-        frameCountId = Shader.PropertyToID("_FrameCount");
 
         Camera.onPreRender += MyPreRender;
     }

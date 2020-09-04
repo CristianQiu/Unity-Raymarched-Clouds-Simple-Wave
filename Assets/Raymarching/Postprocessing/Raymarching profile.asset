@@ -42,7 +42,7 @@ MonoBehaviour:
     overrideState: 1
     value: 0.05
   fastMode:
-    overrideState: 1
+    overrideState: 0
     value: 0
 --- !u!114 &114305522751741656
 MonoBehaviour:
@@ -1401,7 +1401,7 @@ MonoBehaviour:
     value: 1
   shutterAngle:
     overrideState: 1
-    value: 360
+    value: 270
   sampleCount:
     overrideState: 1
     value: 16
@@ -1443,7 +1443,7 @@ MonoBehaviour:
     overrideState: 1
     value: {r: 1, g: 1, b: 1, a: 1}
   fastMode:
-    overrideState: 1
+    overrideState: 0
     value: 0
   dirtTexture:
     overrideState: 0
