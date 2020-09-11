@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2084082187}
-  m_IndirectSpecularColor: {r: 0.21245897, g: 0.21912657, b: 0.19203854, a: 1}
+  m_IndirectSpecularColor: {r: 0.33978173, g: 0.40676877, b: 0.5881345, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2842,7 +2842,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1477129884}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: SphereCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3727,7 +3727,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2084082186}
-  m_LocalRotation: {x: 0.1723502, y: 0.8214435, z: -0.32473528, w: 0.4359735}
+  m_LocalRotation: {x: 0.17235021, y: 0.82144356, z: -0.3247353, w: 0.43597353}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

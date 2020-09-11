@@ -3,14 +3,11 @@
 // Extremely nice reading to understand the basics of volume rendering !
 // https://www.scratchapixel.com/lessons/advanced-rendering/volume-rendering-for-artists
 
-// raymarching macros
 #define FROMCAMSTEPS 16
 #define FROMCAMSTEPSIZE 1.0 / (float)FROMCAMSTEPS
 
 #define TOLIGHTSTEPS 4
 #define TOLIGHTSTEPSIZE 1.0 / (float)TOLIGHTSTEPS
-
-#define ZEROF 0.0
 
 struct PerlinInfo
 {
@@ -50,10 +47,8 @@ float sphereDist(float3 pos, SphereInfo sphereInfo)
     return distance(pos, sphereInfo.pos) - sphereInfo.radius;
 }
 
-// raymarching
 float4 march(float3 camRayOrig, float3 camRayDir, float3 lightDir, PerlinInfo perlinInfo, SphereInfo sphereInfo, CloudInfo cloudInfo)
 {
-    // variables initialization
     float3 lightEnergy = float3(0.0f, 0.0f, 0.0f);
 
     float accumFromCam = 0.0;
@@ -62,33 +57,35 @@ float4 march(float3 camRayOrig, float3 camRayDir, float3 lightDir, PerlinInfo pe
     float transmittance = 1.0;
     float cloudDensity = 0.0;
 
-    // squish some performance precalculating some stuff...
+    // precalculate rays steps
     float3 camRayStep = camRayDir * FROMCAMSTEPSIZE;
     float3 lightRayStep = lightDir * TOLIGHTSTEPSIZE;
 
     cloudInfo.density *= FROMCAMSTEPS;
     cloudInfo.absortion *= TOLIGHTSTEPSIZE;
 
-    // the "from cam" march
+    // march from the camera
     for (int i = 0; i < FROMCAMSTEPS; i++)
     {
         // if inside of the sphere, take samples
-        if (sphereDist(camRayOrig, sphereInfo) <= ZEROF)
+        if (sphereDist(camRayOrig, sphereInfo) <= 0.0)
         {
             float fromCamSample = PerlinNormal(camRayOrig, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
 
+            // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
             if (fromCamSample > 0.01)
             {
+                // this will produce shadow banding but idk how to simulate the dither effect that is done with the camera march
                 float3 lightRayPos = camRayOrig;
 
-                // take the initial sample? don't think so
+                // take the initial sample? would that be like selfshadowing?
                 accumToLight = 0.0;
 
-                // the "to light" march
+                // march to the light
                 for (int j = 0; j < TOLIGHTSTEPS; j++)
                 {
                     // if inside of the sphere, take samples
-                    if (sphereDist(lightRayPos, sphereInfo) <= ZEROF)
+                    if (sphereDist(lightRayPos, sphereInfo) <= 0.0)
                     {
                         lightRayPos += lightRayStep;
 
@@ -99,7 +96,7 @@ float4 march(float3 camRayOrig, float3 camRayDir, float3 lightDir, PerlinInfo pe
                         break;
                 }
 
-                // code straight out http://shaderbits.com/blog/creating-volumetric-ray-marcher with some tweaks that may not be correct for our approach...
+                // code adapted from http://shaderbits.com/blog/creating-volumetric-ray-marcher
                 cloudDensity = saturate(fromCamSample * cloudInfo.density);
 
                 float atten = exp(-accumToLight * (cloudInfo.absortion + cloudInfo.outScattering));

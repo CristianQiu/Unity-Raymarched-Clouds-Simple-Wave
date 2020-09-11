@@ -2,7 +2,6 @@
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
-[ExecuteInEditMode]
 [RequireComponent(typeof(MeshRenderer))]
 public class Raymarching : MonoBehaviour
 {
@@ -54,10 +53,7 @@ public class Raymarching : MonoBehaviour
 
     private void SetAAMode(bool wantTaa)
     {
-        if (wantTaa)
-            ppLayer.antialiasingMode = PostProcessLayer.Antialiasing.TemporalAntialiasing;
-        else
-            ppLayer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+        ppLayer.antialiasingMode = wantTaa ? PostProcessLayer.Antialiasing.TemporalAntialiasing : PostProcessLayer.Antialiasing.None;
     }
 
     private void MyPreRender(Camera cam)

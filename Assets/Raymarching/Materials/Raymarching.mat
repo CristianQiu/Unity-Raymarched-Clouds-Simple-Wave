@@ -24,7 +24,7 @@ Material:
     - _Amplitude: 0.5
     - _Coverage: 0.44
     - _Density: 0.03
-    - _FrameCount: 1
+    - _FrameCount: 23
     - _Frequency: 3
     - _JitterEnabled: 1
     - _Lacunarity: 3
@@ -34,5 +34,5 @@ Material:
     - _SphereRadius: 0.5
     m_Colors:
     - _Color: {r: 0.93475336, g: 0.9103774, b: 1, a: 1}
-    - _Offset: {r: 0, g: 0.005, b: 0, a: 0}
+    - _Offset: {r: 0.008, g: 0, b: -0.01, a: 0}
     - _SpherePos: {r: 0, g: 0.36861843, b: -0.25810936, a: 0}
