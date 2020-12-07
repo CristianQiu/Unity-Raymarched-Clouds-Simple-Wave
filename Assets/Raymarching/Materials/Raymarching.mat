@@ -22,14 +22,14 @@ Material:
     m_Floats:
     - _Absortion: 0
     - _Amplitude: 0.5
-    - _Coverage: 0.40550166
-    - _Density: 0.05535226
-    - _FrameCount: 3175
+    - _Coverage: 0.44
+    - _Density: 0.03
+    - _FrameCount: 938
     - _Frequency: 3
     - _JitterEnabled: 1
     - _Lacunarity: 3
     - _Octaves: 8
-    - _OutScattering: 1.8212421
+    - _OutScattering: 3.49
     - _Persistence: 0.5
     - _SphereRadius: 0.5
     m_Colors:
