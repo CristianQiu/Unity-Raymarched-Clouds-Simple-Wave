@@ -1,8 +1,23 @@
 ﻿Shader "Unlit/WaveCube"
 {
+	Properties
+	{
+		[HideInInspector] _FurthestObjectDistance("", Float) = 50.0
+
+		_OriginColor("OriginColor", Color) = (1.0, 1.0, 1.0, 1.0)
+		_EndColor("EndColor", Color) = (1.0, 1.0, 1.0, 1.0)
+		_BottomColor("BottomColor", Color) = (1.0, 1.0, 1.0, 1.0)
+		_TopColor("TopColor", Color) = (1.0, 1.0, 1.0, 1.0)
+
+		_TranslationIntensity("TranslationIntensity", Float) = 0.5
+		_RotationIntensity("RotationIntensity", Range(0.0, 2.0)) = 0.0
+		_MinScale("MinScale", Range(0.0, 1.0)) = 0.05
+		_MaxScale("MaxScale", Range(0.0, 2.0)) = 0.4
+	}
+
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType" = "Opaque" }
 		LOD 100
 
 		Pass
@@ -13,8 +28,20 @@
 			#pragma fragment frag
 			#pragma multi_compile_fog
 			#pragma multi_compile_instancing // Adds instancing: https://docs.unity3d.com/Manual/GPUInstancing.html?_ga=2.121013825.818621639.1599668057-593361580.1599668057
-			
+
 			#include "UnityCG.cginc"
+
+			float _FurthestObjectDistance;
+			
+			float4 _OriginColor;
+			float4 _EndColor;
+			float4 _BottomColor;
+			float4 _TopColor;
+
+			float _TranslationIntensity;
+			float _RotationIntensity;
+			float _MinScale;
+			float _MaxScale;
 
 			struct appdata
 			{
@@ -38,32 +65,28 @@
 
 				UNITY_SETUP_INSTANCE_ID(v);
 
+				// object center
 				float4 zero = float4(0.0, 0.0, 0.0, 1.0);
-
-				// world positions
-				float4 vertexPos = mul(unity_ObjectToWorld, v.vertex);
 				float4 worldObjectCenter = mul(unity_ObjectToWorld, zero);
-				float3 camWorldPos = _WorldSpaceCameraPos;
 
-				float3 xZObjectDistFromWorldOrigin = length(float2(worldObjectCenter.xz));
-
-				// rotation
-				float t = _Time.w - xZObjectDistFromWorldOrigin;
-				t = clamp(t, 0.0, t);
-				float percSin = saturate((sin(t) + 1.0) / (1.0  + 1.0));
-
-				float3 rotation = float3(0.0, 0.0, 0.0);
-
-				rotation.x = (worldObjectCenter.z / 20.0) * percSin;
-				rotation.y = 0.0;
-				rotation.z = -(worldObjectCenter.x / 20.0) * percSin;
+				// animation
+				float3 xzDistFromWorldOrigin = length(float2(worldObjectCenter.xz));
+				float xzDist01 = xzDistFromWorldOrigin / _FurthestObjectDistance;
+				
+				float t = _Time.y + (_FurthestObjectDistance - xzDistFromWorldOrigin);
+				float sin01 = (sin(t) + 1.0) * 0.5;
 
 				// translation
-				float3 translation = float3(0.0, 0.0, 0.0);
-				translation.y = percSin * 0.15 * xZObjectDistFromWorldOrigin;
+				float yTrans = sin01 * _TranslationIntensity;
+				float3 translation = float3(0.0, yTrans, 0.0);
+
+				// rotation
+				float xRot = (worldObjectCenter.z / 10.0) * sin01 * _RotationIntensity;
+				float zRot = -(worldObjectCenter.x / 10.0) * sin01 * _RotationIntensity;
+				float3 rotation = float3(xRot, 0.0, zRot);
 
 				// scale
-				float currScale = lerp(0.6, 0.9, percSin);
+				float scale = lerp(_MinScale, _MaxScale, sin01);
 
 				// matrices
 				float4x4 rotXMat = float4x4
@@ -73,7 +96,6 @@
 					0.0, sin(rotation.x), cos(rotation.x), 0.0,
 					0.0, 0.0, 0.0, 1.0
 				);
-
 				float4x4 rotYMat = float4x4
 				(
 					cos(rotation.y), 0.0, sin(rotation.y), 0.0,
@@ -81,12 +103,19 @@
 					-sin(rotation.y), 0.0, cos(rotation.y), 0.0,
 					0.0, 0.0, 0.0, 1.0
 				); 
-
 				float4x4 rotZMat = float4x4
 				(
 					cos(rotation.z), -sin(rotation.z), 0.0, 0.0,
 					sin(rotation.z), cos(rotation.z), 0.0, 0.0,
 					0.0, 0.0, 1.0, 0.0,
+					0.0, 0.0, 0.0, 1.0
+				); 
+
+				float4x4 scaleMat = float4x4
+				(
+					scale, 0.0, 0.0, 0.0,
+					0.0, scale, 0.0, 0.0,
+					0.0, 0.0, scale, 0.0,
 					0.0, 0.0, 0.0, 1.0
 				); 
 
@@ -98,14 +127,6 @@
 					0.0, 0.0, 0.0, 1.0
 				);
 
-				float4x4 scaleMat = float4x4
-				(
-					currScale, 0.0, 0.0, 0.0,
-					0.0, currScale, 0.0, 0.0,
-					0.0, 0.0, currScale, 0.0,
-					0.0, 0.0, 0.0, 1.0
-				); 
-
 				float4x4 rotMat = mul(rotZMat, rotXMat);
 				rotMat = mul(rotMat, rotYMat);
 
@@ -116,7 +137,11 @@
 				float4x4 mv = mul(UNITY_MATRIX_V, modelMatrix);
 				float4x4 mvp = mul(UNITY_MATRIX_P, mv);
 
-				float4 col = float4(v.color.r * (1.0 - percSin), v.color.g * (-percSin * 0.5), v.color.b * percSin, 1.0);
+				float4 col = lerp(_OriginColor, _EndColor, xzDist01);
+				float4 sineColor = lerp(_BottomColor, _TopColor, sin01);
+				col += sineColor;
+				col *= 0.5;
+				col.a = 1.0;
 
 				o.vertex = mul(mvp, v.vertex);
 				o.color = col;

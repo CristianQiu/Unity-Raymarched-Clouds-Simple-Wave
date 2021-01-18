@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Cube
+  m_Name: WaveObject
   m_Shader: {fileID: 4800000, guid: 9ce75a15c46169d4493e4995877148f9, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -56,22 +56,35 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AnimationSpeed: -13.51
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FurthestObjectDistance: 24.947168
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _MaxScale: 0.4
     - _Metallic: 0
+    - _MinScale: 0.05
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RotationIntensity: 2
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Test: 0.46
+    - _TranslationIntensity: 0.5
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _BottomColor: {r: 0.764151, g: 0.34242615, b: 0.613653, a: 1}
+    - _Color: {r: 1, g: 0.514151, b: 0.67957324, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EndColor: {r: 0.23740657, g: 0.9150943, b: 0.3437105, a: 1}
+    - _OriginColor: {r: 0.9811321, g: 0.27305093, b: 0.27305093, a: 1}
+    - _StartColor: {r: 0.34509805, g: 0, b: 1, a: 1}
+    - _TopColor: {r: 0.09972411, g: 0.47109202, b: 0.7830189, a: 1}
+  m_BuildTextureStacks: []
