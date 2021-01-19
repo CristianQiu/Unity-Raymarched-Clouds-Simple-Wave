@@ -92,16 +92,15 @@ float Perlin3D(float3 P)
 	return final;
 }
 
-float Perc(float val, float min, float max)
+float InverseLerp(float val, float min, float max)
 {
-    return saturate((val - min) / (max - min));
+	return saturate((val - min) / (max - min));
 }
 
 float Remap(float val, float origMin, float origMax, float destMin, float destMax)
 {
-    float perc = Perc(val, origMin, origMax);
-
-    return lerp(destMin, destMax, perc);
+	float t = InverseLerp(val, origMin, origMax);
+	return lerp(destMin, destMax, t);
 }
 
 float2 PerlinNormal(float3 p, float cutOff, int octaves, float3 offset, float frequency, float amplitude, float lacunarity, float persistence)

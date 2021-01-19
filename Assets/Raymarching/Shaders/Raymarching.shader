@@ -14,29 +14,28 @@
 		_Frequency("Frequency", Float) = 3.0
 		_Lacunarity("Lacunarity", Float) = 3.0
 
-		[HideInInspector]
-		_Amplitude("Amplitude", Float) = 0.5
-		[HideInInspector]
-		_Persistence("Persistence", Float) = 0.5
+		[HideInInspector] _Amplitude("Amplitude", Float) = 0.5
+		[HideInInspector] _Persistence("Persistence", Float) = 0.5
 
-		[HideInInspector]
-		_SphereRadius("SphereRadius", Float) = 0.5
-		[HideInInspector]
-		_SpherePos("SpherePos", Vector) = (0.0, 0.0, 0.0)
+		[HideInInspector] _SphereRadius("SphereRadius", Float) = 0.5
+		[HideInInspector] _SpherePos("SpherePos", Vector) = (0.0, 0.0, 0.0)
 
-		[HideInInspector]
-		_JitterEnabled("JitterEnabled", Range(0, 1)) = 1
-		[HideInInspector]
-		_FrameCount("FrameCount", Int) = 0.0
+		[HideInInspector] _JitterEnabled("JitterEnabled", Range(0, 1)) = 1
+		[HideInInspector] _FrameCount("FrameCount", Int) = 0.0
 	}
 
 	SubShader
 	{
-		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
-		Blend SrcAlpha OneMinusSrcAlpha
+		Tags
+		{ 
+			"Queue" = "Transparent"
+			"IgnoreProjector" = "True"
+			"RenderType" = "Transparent" 
+		}
 
 		// No culling or depth
 		Cull Off ZWrite Off ZTest Always
+		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass
 		{
@@ -46,8 +45,8 @@
 			#pragma fragment frag
 
 			#include "UnityCG.cginc"
-			#include "Raymarching.cginc"
 			#include "Lighting.cginc"
+			#include "Raymarching.cginc"
 
 			float4 _Color;
 
@@ -59,8 +58,9 @@
 			int _Octaves;
 			float3 _Offset;
 			float _Frequency;
-			float _Lacunarity;
 			float _Amplitude;
+
+			float _Lacunarity;
 			float _Persistence;
 
 			float _SphereRadius;
@@ -92,20 +92,24 @@
 
 			float4 frag (v2f i) : SV_Target
 			{
-				float3 lightDir = _WorldSpaceLightPos0.xyz;
-
-				float3 rayDir = normalize(i.wPos - _WorldSpaceCameraPos);
-				float3 rayOrig = _WorldSpaceCameraPos;
+				float3 ro = _WorldSpaceCameraPos;
+				float3 rd = normalize(i.wPos - ro);
 
 				_FrameCount %= 8.0;
 				float2 frameCount = float2(_FrameCount, -_FrameCount);
-				float rayOffset = IGN(i.vertex.xy + frameCount);
-									
-				rayOrig += (rayDir * rayOffset * (FROMCAMSTEPSIZE * _JitterEnabled));
+
+				float roJitter = IGN(i.vertex.xy + frameCount);
+				float3 roJittered = ro + (rd * roJitter * _JitterEnabled);
+
+				float3 lightDir = _WorldSpaceLightPos0.xyz;
+
+				// sphere
+				SphereInfo sphereInfo;
+				sphereInfo.pos = _SpherePos;
+				sphereInfo.radius = _SphereRadius;
 
 				// perlin noise
 				PerlinInfo perlinInfo;
-
 				perlinInfo.cutOff = 1.0 - _Coverage;
 				perlinInfo.octaves = _Octaves;
 				perlinInfo.offset = _Offset * _Time.y;
@@ -114,23 +118,19 @@
 				perlinInfo.lacunarity = _Lacunarity;
 				perlinInfo.persistence = _Persistence;
 
-				// sphere
-				SphereInfo sphereInfo;
-
-				sphereInfo.pos = _SpherePos;
-				sphereInfo.radius = _SphereRadius;
-
 				// cloud
 				CloudInfo cloudInfo;
-
 				cloudInfo.absortion = _Absortion;
 				cloudInfo.outScattering = _OutScattering;
 				cloudInfo.density = _Density;
 
-				// do raymarching
-				float4 o = march(rayOrig, rayDir, lightDir, perlinInfo, sphereInfo, cloudInfo);
+				float4 o = march(roJittered, ro, rd, lightDir, sphereInfo, perlinInfo, cloudInfo);
 				
-				return float4(o.rgb * _LightColor0.rgb *_Color.rgb, 1.0 - o.a);
+				return float4(o.r, o.g, o.b, o.a);
+
+				//return float4(o.rgb * _LightColor0.rgb *_Color.rgb, 1.0 - o.a);
+
+				//return float4(o.rgb * _LightColor0.rgb *_Color.rgb, 1.0 - o.a);
 			}
 
 			ENDCG

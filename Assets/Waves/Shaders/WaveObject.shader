@@ -1,4 +1,4 @@
-﻿Shader "Unlit/WaveCube"
+﻿Shader "Unlit/WaveObject"
 {
 	Properties
 	{
@@ -138,8 +138,8 @@
 				float4x4 mvp = mul(UNITY_MATRIX_P, mv);
 
 				float4 col = lerp(_OriginColor, _EndColor, xzDist01);
-				float4 sineColor = lerp(_BottomColor, _TopColor, sin01);
-				col += sineColor;
+				float4 sinColor = lerp(_BottomColor, _TopColor, sin01);
+				col += sinColor;
 				col *= 0.5;
 				col.a = 1.0;
 

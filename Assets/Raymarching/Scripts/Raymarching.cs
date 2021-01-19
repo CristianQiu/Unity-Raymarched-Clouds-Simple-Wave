@@ -5,6 +5,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(MeshRenderer))]
 public class Raymarching : MonoBehaviour
 {
+    #region Private Attributes
+
     [Header("UI")]
     [SerializeField] private Slider scatteringSlider = null;
 
@@ -31,18 +33,19 @@ public class Raymarching : MonoBehaviour
     private readonly int coverageId = Shader.PropertyToID("_Coverage");
     private readonly int jitterId = Shader.PropertyToID("_JitterEnabled");
 
+    #endregion
+
+    #region MonoBehaviour Methods
+
     private void Start()
     {
         raymarchMat = GetComponent<MeshRenderer>().sharedMaterial;
-
         Camera.onPreRender += MyPreRender;
     }
 
     private void Update()
     {
-        float dt = Time.deltaTime;
-
-        Vector3 eulers = new Vector3(0.0f, sunSpeedSlider.value * dt, 0.0f);
+        Vector3 eulers = new Vector3(0.0f, sunSpeedSlider.value * Time.deltaTime, 0.0f);
         sun.Rotate(eulers, Space.World);
     }
 
@@ -50,6 +53,10 @@ public class Raymarching : MonoBehaviour
     {
         Camera.onPreRender -= MyPreRender;
     }
+
+    #endregion
+
+    #region Methods
 
     private void SetAAMode(bool wantTaa)
     {
@@ -71,4 +78,6 @@ public class Raymarching : MonoBehaviour
 
         SetAAMode(taaToggle.isOn);
     }
+
+    #endregion
 }
