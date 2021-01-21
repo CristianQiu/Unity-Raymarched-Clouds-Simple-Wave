@@ -9,7 +9,7 @@
 		_Density("Density", Range(0.0, 0.1)) = 0.04
 
 		_Coverage("Coverage", Range(0.0, 0.5)) = 0.42
-		_Octaves("Octaves", Range(4, 8)) = 8
+		_Octaves("Octaves", Range(1, 8)) = 8
 		_Offset("Offset", Vector) = (0.0, 0.005, 0.0, 0.0)
 		_Frequency("Frequency", Float) = 3.0
 		_Lacunarity("Lacunarity", Float) = 3.0

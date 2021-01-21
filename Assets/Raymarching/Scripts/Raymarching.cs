@@ -8,11 +8,11 @@ public class Raymarching : MonoBehaviour
     #region Private Attributes
 
     [Header("UI")]
-    [SerializeField] private Slider scatteringSlider = null;
-
-    [SerializeField] private Slider densitySlider = null;
-    [SerializeField] private Slider coverageSlider = null;
     [SerializeField] private Slider sunSpeedSlider = null;
+
+    [SerializeField] private Slider coverageSlider = null;
+    [SerializeField] private Slider densitySlider = null;
+    [SerializeField] private Slider outScatteringSlider = null;
     [SerializeField] private Slider jitterSlider = null;
     [SerializeField] private Toggle taaToggle = null;
 
@@ -22,16 +22,16 @@ public class Raymarching : MonoBehaviour
     [SerializeField] private PostProcessLayer ppLayer = null;
     [SerializeField] private Transform sphere = null;
 
-    private Material raymarchMat = null;
+    private Material raymarchMat;
 
     private readonly int posId = Shader.PropertyToID("_SpherePos");
     private readonly int radiusId = Shader.PropertyToID("_SphereRadius");
-    private readonly int frameCountId = Shader.PropertyToID("_FrameCount");
-    private readonly int absortionId = Shader.PropertyToID("_Absortion");
-    private readonly int outScatteringId = Shader.PropertyToID("_OutScattering");
-    private readonly int densityId = Shader.PropertyToID("_Density");
     private readonly int coverageId = Shader.PropertyToID("_Coverage");
+    private readonly int densityId = Shader.PropertyToID("_Density");
+    private readonly int outScatteringId = Shader.PropertyToID("_OutScattering");
+    private readonly int absortionId = Shader.PropertyToID("_Absortion");
     private readonly int jitterId = Shader.PropertyToID("_JitterEnabled");
+    private readonly int frameCountId = Shader.PropertyToID("_FrameCount");
 
     #endregion
 
@@ -58,25 +58,17 @@ public class Raymarching : MonoBehaviour
 
     #region Methods
 
-    private void SetAAMode(bool wantTaa)
-    {
-        ppLayer.antialiasingMode = wantTaa ? PostProcessLayer.Antialiasing.TemporalAntialiasing : PostProcessLayer.Antialiasing.None;
-    }
-
     private void MyPreRender(Camera cam)
     {
-        raymarchMat.SetFloat(absortionId, 0.0f);
-        raymarchMat.SetFloat(outScatteringId, scatteringSlider.value);
-        raymarchMat.SetFloat(densityId, densitySlider.value);
-        raymarchMat.SetFloat(coverageId, coverageSlider.value);
-
-        raymarchMat.SetInt(jitterId, (int)jitterSlider.value);
-
         raymarchMat.SetVector(posId, sphere.position);
         raymarchMat.SetFloat(radiusId, sphere.localScale.x * 0.5f);
+        raymarchMat.SetFloat(coverageId, coverageSlider.value);
+        raymarchMat.SetFloat(densityId, densitySlider.value);
+        raymarchMat.SetFloat(outScatteringId, outScatteringSlider.value);
+        raymarchMat.SetFloat(absortionId, 0.0f);
+        raymarchMat.SetInt(jitterId, (int)jitterSlider.value);
         raymarchMat.SetFloat(frameCountId, Time.frameCount);
-
-        SetAAMode(taaToggle.isOn);
+        ppLayer.antialiasingMode = taaToggle.isOn ? PostProcessLayer.Antialiasing.TemporalAntialiasing : PostProcessLayer.Antialiasing.None;
     }
 
     #endregion

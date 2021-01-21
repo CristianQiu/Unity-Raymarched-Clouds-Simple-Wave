@@ -89,6 +89,14 @@
 				float scale = lerp(_MinScale, _MaxScale, sin01);
 
 				// matrices
+				float4x4 transMat = float4x4
+				(
+					1.0, 0.0, 0.0, translation.x,
+					0.0, 1.0, 0.0, translation.y,
+					0.0, 0.0, 1.0, translation.z,
+					0.0, 0.0, 0.0, 1.0
+				);
+
 				float4x4 rotXMat = float4x4
 				(
 					1.0, 0.0, 0.0, 0.0,
@@ -119,20 +127,12 @@
 					0.0, 0.0, 0.0, 1.0
 				); 
 
-				float4x4 transMat = float4x4
-				(
-					1.0, 0.0, 0.0, translation.x,
-					0.0, 1.0, 0.0, translation.y,
-					0.0, 0.0, 1.0, translation.z,
-					0.0, 0.0, 0.0, 1.0
-				);
+				float4x4 rotMat = mul(rotYMat, rotXMat);
+				rotMat = mul(rotZMat, rotMat);
 
-				float4x4 rotMat = mul(rotZMat, rotXMat);
-				rotMat = mul(rotMat, rotYMat);
-
-				float4x4 modelMatrix = mul(unity_ObjectToWorld, rotMat);
-				modelMatrix = mul(modelMatrix, scaleMat);
-				modelMatrix = mul(modelMatrix, transMat);
+				float4x4 modelMatrix = mul(rotMat, scaleMat);
+				modelMatrix = mul(transMat, modelMatrix);
+				modelMatrix = mul(unity_ObjectToWorld, modelMatrix);
 
 				float4x4 mv = mul(UNITY_MATRIX_V, modelMatrix);
 				float4x4 mvp = mul(UNITY_MATRIX_P, mv);

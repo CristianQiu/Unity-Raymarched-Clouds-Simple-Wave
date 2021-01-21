@@ -42,7 +42,7 @@ bool raySphereIntersection(float3 ro, float3 rd, float3 s, float r, out float3 t
 
     float y = length(s - p);
 
-    if (y <= r)
+    if (y < r)
     {
         float x = sqrt(r * r - y * y);
 
@@ -83,16 +83,13 @@ float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, SphereInf
     t1 += jitter;
 
     // set the number of raymarching steps
-    const int MarchSteps = 8;
+    const int MarchSteps = 12;
     const float MarchStepSize = (r * 2.0) / (float)MarchSteps;
 
     float accum = 0.0;
     int numSamples = 0;
 
     float3 lightEnergy = float3(0.0f, 0.0f, 0.0f);
-
-    float accumFromCam = 0.0;
-    float accumToLight = 0.0;
 
     float transmittance = 1.0;
     float cloudDensity = 0.0;
@@ -108,19 +105,19 @@ float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, SphereInf
     for (int i = 0; i < MarchSteps; i++)
     {
         // if outside of the sphere, end
-        if (sphereDist(t1, s, r) > 0.0)
+        if (sphereDist(t1, s, r) >= 0.0)
             break;
 
         float fromCamSample = PerlinNormal(t1, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
 
         // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
-        if (fromCamSample > 0.01)
+        if (fromCamSample > 0.001)
         {
             // this will produce shadow banding but idk how to simulate the dither effect that is done with the camera march
-            float3 lightRayPos = roJittered;
+            float3 lightRayPos = t1;
 
             // take the initial sample? would that be like selfshadowing?
-            accumToLight = 0.0;
+            float accumToLight = 0.0;
 
             // march to the light
             for (int j = 0; j < MarchSteps; j++)

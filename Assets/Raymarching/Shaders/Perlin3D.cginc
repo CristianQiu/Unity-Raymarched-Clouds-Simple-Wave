@@ -103,7 +103,12 @@ float Remap(float val, float origMin, float origMax, float destMin, float destMa
 	return lerp(destMin, destMax, t);
 }
 
-float2 PerlinNormal(float3 p, float cutOff, int octaves, float3 offset, float frequency, float amplitude, float lacunarity, float persistence)
+float Remap01(float val, float origMin, float origMax)
+{
+	return Remap(val, origMin, origMax, 0.0, 1.0);
+}
+
+float PerlinNormal(float3 p, float cutOff, int octaves, float3 offset, float frequency, float amplitude, float lacunarity, float persistence)
 {
 	float sum = 0.0;
 	float maxAmp = 0.0;
@@ -119,10 +124,12 @@ float2 PerlinNormal(float3 p, float cutOff, int octaves, float3 offset, float fr
 		amplitude *= persistence;
 	}
 
-    if (sum <= cutOff)
+	sum = Remap01(sum, 0.0, maxAmp);
+
+    if (sum < cutOff)
         sum = 0.0;
     else
-        Remap(sum, cutOff, 1.0, 0.0, 1.0);
+        Remap01(sum, cutOff, 1.0);
 
-    return float2(sum, maxAmp);
+    return sum;
 }
