@@ -4,9 +4,8 @@
 	{
 		_Color("Color", Color) = (1.0, 1.0, 1.0, 1.0)
 
-		_Absortion("Absortion", Range(0.0, 20.0)) = 20.0
-		_OutScattering("OutScattering", Range(0.0, 20.0)) = 0.2
 		_Density("Density", Range(0.0, 0.1)) = 0.04
+		_Absortion("Absortion", Range(0.0, 20.0)) = 20.0
 
 		_Coverage("Coverage", Range(0.0, 0.5)) = 0.42
 		_Octaves("Octaves", Range(1, 8)) = 8
@@ -50,9 +49,8 @@
 
 			float4 _Color;
 
-			float _Absortion;
-			float _OutScattering;
 			float _Density;
+			float _Absortion;
 
 			float _Coverage;
 			int _Octaves;
@@ -120,11 +118,10 @@
 
 				// cloud
 				CloudInfo cloudInfo;
-				cloudInfo.absortion = _Absortion;
-				cloudInfo.outScattering = _OutScattering;
 				cloudInfo.density = _Density;
+				cloudInfo.absortion = _Absortion;
 
-				float4 o = march(roJittered, ro, rd, lightDir, sphereInfo, perlinInfo, cloudInfo);
+				float4 o = march(ro, roJittered, rd, lightDir, sphereInfo, perlinInfo, cloudInfo);
 				
 				return float4(o.r, o.g, o.b, o.a);
 

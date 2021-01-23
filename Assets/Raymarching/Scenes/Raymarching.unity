@@ -182,7 +182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Scattering
+  m_text: Absortion
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -292,7 +292,7 @@ RectTransform:
   - {fileID: 209207220}
   - {fileID: 1232430133}
   m_Father: {fileID: 1415458241}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -346,7 +346,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 50
   m_WholeNumbers: 0
-  m_Value: 20.5
+  m_Value: 25
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1430,7 +1430,7 @@ MonoBehaviour:
   sunSpeedSlider: {fileID: 44634224}
   coverageSlider: {fileID: 1681438493}
   densitySlider: {fileID: 1938726437}
-  outScatteringSlider: {fileID: 626681561}
+  absortionSlider: {fileID: 626681561}
   jitterSlider: {fileID: 347681453}
   taaToggle: {fileID: 432792647}
   sun: {fileID: 2084082188}
@@ -1511,7 +1511,7 @@ GameObject:
   - component: {fileID: 626681560}
   - component: {fileID: 626681561}
   m_Layer: 5
-  m_Name: Scattering
+  m_Name: Absortion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1533,7 +1533,7 @@ RectTransform:
   - {fileID: 1817796766}
   - {fileID: 916817168}
   m_Father: {fileID: 1415458241}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1585,9 +1585,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1396644102}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 20
+  m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 3.49
+  m_Value: 0.25
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2819,10 +2819,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 626681560}
-  - {fileID: 1938726436}
-  - {fileID: 1681438492}
   - {fileID: 44634223}
+  - {fileID: 1681438492}
+  - {fileID: 1938726436}
+  - {fileID: 626681560}
   - {fileID: 347681452}
   - {fileID: 432792646}
   m_Father: {fileID: 1671380692}
@@ -3492,7 +3492,7 @@ RectTransform:
   - {fileID: 54247274}
   - {fileID: 1563230998}
   m_Father: {fileID: 1415458241}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3546,7 +3546,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.44
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3619,7 +3619,7 @@ RectTransform:
   - {fileID: 1298692196}
   - {fileID: 439606176}
   m_Father: {fileID: 1415458241}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3673,7 +3673,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 0.1
   m_WholeNumbers: 0
-  m_Value: 0.03
+  m_Value: 0.05
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

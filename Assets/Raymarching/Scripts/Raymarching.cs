@@ -12,7 +12,7 @@ public class Raymarching : MonoBehaviour
 
     [SerializeField] private Slider coverageSlider = null;
     [SerializeField] private Slider densitySlider = null;
-    [SerializeField] private Slider outScatteringSlider = null;
+    [SerializeField] private Slider absortionSlider = null;
     [SerializeField] private Slider jitterSlider = null;
     [SerializeField] private Toggle taaToggle = null;
 
@@ -28,7 +28,6 @@ public class Raymarching : MonoBehaviour
     private readonly int radiusId = Shader.PropertyToID("_SphereRadius");
     private readonly int coverageId = Shader.PropertyToID("_Coverage");
     private readonly int densityId = Shader.PropertyToID("_Density");
-    private readonly int outScatteringId = Shader.PropertyToID("_OutScattering");
     private readonly int absortionId = Shader.PropertyToID("_Absortion");
     private readonly int jitterId = Shader.PropertyToID("_JitterEnabled");
     private readonly int frameCountId = Shader.PropertyToID("_FrameCount");
@@ -64,8 +63,7 @@ public class Raymarching : MonoBehaviour
         raymarchMat.SetFloat(radiusId, sphere.localScale.x * 0.5f);
         raymarchMat.SetFloat(coverageId, coverageSlider.value);
         raymarchMat.SetFloat(densityId, densitySlider.value);
-        raymarchMat.SetFloat(outScatteringId, outScatteringSlider.value);
-        raymarchMat.SetFloat(absortionId, 0.0f);
+        raymarchMat.SetFloat(absortionId, absortionSlider.value);
         raymarchMat.SetInt(jitterId, (int)jitterSlider.value);
         raymarchMat.SetFloat(frameCountId, Time.frameCount);
         ppLayer.antialiasingMode = taaToggle.isOn ? PostProcessLayer.Antialiasing.TemporalAntialiasing : PostProcessLayer.Antialiasing.None;

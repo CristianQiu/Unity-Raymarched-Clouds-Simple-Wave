@@ -20,16 +20,16 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - _Absortion: 0
+    - _Absortion: 0.25
     - _Amplitude: 0.5
-    - _Coverage: 0.48806426
-    - _Density: 0.04236313
-    - _FrameCount: 5844
+    - _Coverage: 0.5895029
+    - _Density: 0.08367004
+    - _FrameCount: 4013
     - _Frequency: 1
     - _JitterEnabled: 1
     - _Lacunarity: 2.5
-    - _Octaves: 3
-    - _OutScattering: 0
+    - _Octaves: 4
+    - _OutScattering: 3.49
     - _Persistence: 0.5
     - _SphereRadius: 2.5
     m_Colors:

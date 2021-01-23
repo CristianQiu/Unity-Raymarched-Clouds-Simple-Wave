@@ -23,7 +23,6 @@ struct CloudInfo
 {
     float density;
     float absortion;
-    float outScattering;
 };
 
 // interleaved gradient noise mentioned in 
@@ -49,7 +48,7 @@ bool raySphereIntersection(float3 ro, float3 rd, float3 s, float r, out float3 t
         float tx1 = t - x;
         float tx2 = t + x;
 
-        t1 = ro + rd * tx1;
+        t1 = t < 0.0 ? ro : ro + rd * tx1;
         t2 = ro + rd * tx2;
 
         return true;
@@ -65,7 +64,7 @@ float sphereDist(float3 pos, float3 s, float3 r)
 }
 
 // raymarching
-float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, SphereInfo sphereInfo, PerlinInfo perlinInfo, CloudInfo cloudInfo)
+float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInfo sphereInfo, PerlinInfo perlinInfo, CloudInfo cloudInfo)
 {
     float s = sphereInfo.pos;
     float r = sphereInfo.radius;
@@ -78,13 +77,22 @@ float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, SphereInf
     if (!intersectsSphere)
         return float4(0.0, 0.0, 0.0, 0.0);
 
-    // I'm unsure about the correctness of the jitter since intersecting with the sphere is already offsetting... It definitely improves the quality still though.
+    // Jittering is nowhere near accurate, since intersecting is already offsetting the rays. 
+    // The fact that we will also take the same number of samples inside the sphere no matter what distance we travel inside is also another factor why this jitter is "not correct".
+    // Still, it improves the quality a lot so I apply it anyway...
     float3 jitter = roJittered - ro;
     t1 += jitter;
 
-    // set the number of raymarching steps
-    const int MarchSteps = 12;
-    const float MarchStepSize = (r * 2.0) / (float)MarchSteps;
+    // set the number of raymarching steps, we are always taking the same number of samples inside the sphere no matter the distance traveled inside
+    const int MarchSteps = 8;
+    float distInsideSphere = distance(t1, t2);
+    const float MarchStepSize = distInsideSphere / (float)MarchSteps;
+    
+    // TODO: if the distance for each step is so small that is insignificant, we could probably get away with one or less samples...
+
+    // precalculate rays steps
+    float3 camRayStep = rd * MarchStepSize;
+    float3 lightRayStep = lightDir * MarchStepSize;
 
     float accum = 0.0;
     int numSamples = 0;
@@ -94,32 +102,20 @@ float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, SphereInf
     float transmittance = 1.0;
     float cloudDensity = 0.0;
 
-    // precalculate rays steps
-    float3 camRayStep = rd * MarchStepSize;
-    float3 lightRayStep = lightDir * MarchStepSize;
-
     cloudInfo.density *= MarchSteps;
     cloudInfo.absortion *= MarchSteps;
 
     // march from the camera
     for (int i = 0; i < MarchSteps; i++)
     {
-        // if outside of the sphere, end
-        if (sphereDist(t1, s, r) >= 0.0)
-            break;
-
         float fromCamSample = PerlinNormal(t1, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
 
-        // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
         if (fromCamSample > 0.001)
         {
-            // this will produce shadow banding but idk how to simulate the dither effect that is done with the camera march
             float3 lightRayPos = t1;
-
-            // take the initial sample? would that be like selfshadowing?
             float accumToLight = 0.0;
 
-            // march to the light
+            // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
             for (int j = 0; j < MarchSteps; j++)
             {
                 // if inside of the sphere, take samples
@@ -137,7 +133,7 @@ float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, SphereInf
             // code adapted from http://shaderbits.com/blog/creating-volumetric-ray-marcher
             cloudDensity = saturate(fromCamSample * cloudInfo.density);
 
-            float atten = exp(-accumToLight * (cloudInfo.absortion + cloudInfo.outScattering));
+            float atten = exp(-accumToLight * cloudInfo.absortion);
             float3 absorbedLight = atten * cloudDensity;
 
             lightEnergy += (absorbedLight * transmittance);
