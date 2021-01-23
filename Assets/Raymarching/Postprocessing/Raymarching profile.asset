@@ -1402,10 +1402,10 @@ MonoBehaviour:
     value: 1
   shutterAngle:
     overrideState: 1
-    value: 360
+    value: 270
   sampleCount:
     overrideState: 1
-    value: 32
+    value: 16
 --- !u!114 &114828819232897810
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1438,7 +1438,7 @@ MonoBehaviour:
     overrideState: 1
     value: 7
   anamorphicRatio:
-    overrideState: 1
+    overrideState: 0
     value: 0
   color:
     overrideState: 1
@@ -1470,14 +1470,14 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   colored:
-    overrideState: 1
+    overrideState: 0
     value: 0
   intensity:
     overrideState: 1
-    value: 0.258
+    value: 0.25
   size:
     overrideState: 1
-    value: 0.69
+    value: 0.7
   lumContrib:
     overrideState: 1
     value: 0.8

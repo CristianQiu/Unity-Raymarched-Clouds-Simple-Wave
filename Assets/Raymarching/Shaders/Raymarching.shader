@@ -2,8 +2,6 @@
 {
 	Properties
 	{
-		_Color("Color", Color) = (1.0, 1.0, 1.0, 1.0)
-
 		_Density("Density", Range(0.0, 0.1)) = 0.04
 		_Absortion("Absortion", Range(0.0, 20.0)) = 20.0
 
@@ -12,15 +10,15 @@
 		_Offset("Offset", Vector) = (0.0, 0.005, 0.0, 0.0)
 		_Frequency("Frequency", Float) = 3.0
 		_Lacunarity("Lacunarity", Float) = 3.0
-
-		[HideInInspector] _Amplitude("Amplitude", Float) = 0.5
-		[HideInInspector] _Persistence("Persistence", Float) = 0.5
-
+	
 		[HideInInspector] _SphereRadius("SphereRadius", Float) = 0.5
 		[HideInInspector] _SpherePos("SpherePos", Vector) = (0.0, 0.0, 0.0)
 
 		[HideInInspector] _JitterEnabled("JitterEnabled", Range(0, 1)) = 1
 		[HideInInspector] _FrameCount("FrameCount", Int) = 0.0
+
+		[HideInInspector] _Amplitude("Amplitude", Float) = 0.5
+		[HideInInspector] _Persistence("Persistence", Float) = 0.5
 	}
 
 	SubShader
@@ -46,8 +44,6 @@
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 			#include "Raymarching.cginc"
-
-			float4 _Color;
 
 			float _Density;
 			float _Absortion;
@@ -88,7 +84,7 @@
 				return o;
 			}
 
-			float4 frag (v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
 				float3 ro = _WorldSpaceCameraPos;
 				float3 rd = normalize(i.wPos - ro);
@@ -124,10 +120,6 @@
 				float4 o = march(ro, roJittered, rd, lightDir, sphereInfo, perlinInfo, cloudInfo);
 				
 				return float4(o.r, o.g, o.b, o.a);
-
-				//return float4(o.rgb * _LightColor0.rgb *_Color.rgb, 1.0 - o.a);
-
-				//return float4(o.rgb * _LightColor0.rgb *_Color.rgb, 1.0 - o.a);
 			}
 
 			ENDCG

@@ -20,20 +20,20 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - _Absortion: 0.25
+    - _Absortion: 0.11
     - _Amplitude: 0.5
-    - _Coverage: 0.5895029
-    - _Density: 0.08367004
-    - _FrameCount: 4013
+    - _Coverage: 0.4944278
+    - _Density: 0.1
+    - _FrameCount: 1241
     - _Frequency: 1
     - _JitterEnabled: 1
-    - _Lacunarity: 2.5
+    - _Lacunarity: 3
     - _Octaves: 4
     - _OutScattering: 3.49
     - _Persistence: 0.5
     - _SphereRadius: 2.5
     m_Colors:
     - _Color: {r: 0.93475336, g: 0.9103774, b: 1, a: 1}
-    - _Offset: {r: 0.11, g: 0, b: 0.09, a: 0}
+    - _Offset: {r: 0.1, g: 0.1, b: 0.1, a: 0}
     - _SpherePos: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

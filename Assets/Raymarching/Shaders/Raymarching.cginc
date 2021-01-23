@@ -30,6 +30,7 @@ struct CloudInfo
 float IGN(float2 screenXy)
 {
     const float3 magic = float3(0.06711056, 0.00583715, 52.9829189);
+
     return frac(magic.z * frac(dot(screenXy, magic.xy)));
 }
 
@@ -71,28 +72,23 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
 
     float3 t1 = float3(0.0, 0.0, 0.0);
     float3 t2 = float3(0.0, 0.0, 0.0);
-
     bool intersectsSphere = raySphereIntersection(ro, rd, s, r, t1, t2);
 
     if (!intersectsSphere)
         return float4(0.0, 0.0, 0.0, 0.0);
 
+    // set the number of raymarching steps, we are always taking the same number of samples inside the sphere no matter the distance traveled inside
+    const int MarchSteps = 8;
+    float distInsideSphere = distance(t1, t2);
+    float marchStepSize = distInsideSphere / (float)MarchSteps;
+    
     // Jittering is nowhere near accurate, since intersecting is already offsetting the rays. 
     // The fact that we will also take the same number of samples inside the sphere no matter what distance we travel inside is also another factor why this jitter is "not correct".
     // Still, it improves the quality a lot so I apply it anyway...
     float3 jitter = roJittered - ro;
-    t1 += jitter;
+    t1 += jitter * marchStepSize;
 
-    // set the number of raymarching steps, we are always taking the same number of samples inside the sphere no matter the distance traveled inside
-    const int MarchSteps = 8;
-    float distInsideSphere = distance(t1, t2);
-    const float MarchStepSize = distInsideSphere / (float)MarchSteps;
-    
-    // TODO: if the distance for each step is so small that is insignificant, we could probably get away with one or less samples...
-
-    // precalculate rays steps
-    float3 camRayStep = rd * MarchStepSize;
-    float3 lightRayStep = lightDir * MarchStepSize;
+    // TODO: if the distance for each step is so small that is insignificant, we could probably get away with one sample...
 
     float accum = 0.0;
     int numSamples = 0;
@@ -110,27 +106,28 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
     {
         float fromCamSample = PerlinNormal(t1, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
 
-        if (fromCamSample > 0.001)
+        if (fromCamSample > 0.01)
         {
+            float3 t3 = 0.0;
+            float3 t4 = 0.0;
+
+            // find the exit point (t4)
+            raySphereIntersection(t1, lightDir, s, r, t3, t4);
+            float distInsideSphereToLight = distance(t1, t4);
+            float marchStepSizeToLight = distInsideSphereToLight / (float)MarchSteps;
+
             float3 lightRayPos = t1;
             float accumToLight = 0.0;
 
             // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
             for (int j = 0; j < MarchSteps; j++)
             {
-                // if inside of the sphere, take samples
-                if (sphereDist(lightRayPos, s, r) <= 0.0)
-                {
-                    lightRayPos += lightRayStep;
+                float toLightSample = PerlinNormal(lightRayPos, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
+                accumToLight += (toLightSample * marchStepSizeToLight);
 
-                    float toLightSample = PerlinNormal(lightRayPos, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
-                    accumToLight += (toLightSample * MarchStepSize); // < 0-1 range if all steps are taken
-                }
-                else
-                    break;
+                lightRayPos += (lightDir * marchStepSizeToLight);
             }
 
-            // code adapted from http://shaderbits.com/blog/creating-volumetric-ray-marcher
             cloudDensity = saturate(fromCamSample * cloudInfo.density);
 
             float atten = exp(-accumToLight * cloudInfo.absortion);
@@ -140,82 +137,8 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
             transmittance *= (1.0 - cloudDensity);
         }
 
-        t1 += camRayStep;
+        t1 += (rd * marchStepSize);
     }
 
     return float4(lightEnergy.rgb, 1.0 - transmittance);
 }
-
-//float4 march(float3 roJittered, float3 ro, float3 rd, float3 lightDir, PerlinInfo perlinInfo, SphereInfo sphereInfo, CloudInfo cloudInfo)
-//{
-//    float3 t1 = 0.0;
-//    float3 t2 = 0.0;
-//
-//    bool intersectsSphere = raySphereIntersection(ro, rd, sphereInfo, t1, t2);
-//
-//    if (!intersectsSphere)
-//        return float4(0.0, 0.0, 0.0, 0.0);
-//
-//    float3 lightEnergy = float3(0.0f, 0.0f, 0.0f);
-//
-//    float accumFromCam = 0.0;
-//    float accumToLight = 0.0;
-//
-//    float transmittance = 1.0;
-//    float cloudDensity = 0.0;
-//
-//    // precalculate rays steps
-//    float3 camRayStep = rd * CAMSTEPSIZE;
-//    float3 lightRayStep = lightDir * LIGHTSTEPSIZE;
-//
-//    cloudInfo.density *= CAMSTEPS;
-//    cloudInfo.absortion *= LIGHTSTEPSIZE;
-//
-//    // march from the camera
-//    for (int i = 0; i < CAMSTEPS; i++)
-//    {
-//        // if inside of the sphere, take samples
-//        if (sphereDist(ro, sphereInfo) <= 0.0)
-//        {
-//            float fromCamSample = PerlinNormal(roJittered, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
-//
-//            // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
-//            if (fromCamSample > 0.01)
-//            {
-//                // this will produce shadow banding but idk how to simulate the dither effect that is done with the camera march
-//                float3 lightRayPos = roJittered;
-//
-//                // take the initial sample? would that be like selfshadowing?
-//                accumToLight = 0.0;
-//
-//                // march to the light
-//                for (int j = 0; j < LIGHTSTEPS; j++)
-//                {
-//                    // if inside of the sphere, take samples
-//                    if (sphereDist(lightRayPos, sphereInfo) <= 0.0)
-//                    {
-//                        lightRayPos += lightRayStep;
-//
-//                        float toLightSample = PerlinNormal(lightRayPos, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
-//                        accumToLight += (toLightSample * LIGHTSTEPSIZE); // < 0-1 range if all steps are taken
-//                    }
-//                    else
-//                        break;
-//                }
-//
-//                // code adapted from http://shaderbits.com/blog/creating-volumetric-ray-marcher
-//                cloudDensity = saturate(fromCamSample * cloudInfo.density);
-//
-//                float atten = exp(-accumToLight * (cloudInfo.absortion + cloudInfo.outScattering));
-//                float3 absorbedLight = atten * cloudDensity;
-//
-//                lightEnergy += (absorbedLight * transmittance);
-//                transmittance *= (1.0 - cloudDensity);
-//            }
-//        }
-//
-//        ro += camRayStep;
-//    }
-//
-//    return float4(lightEnergy.rgb, transmittance);
-//}
