@@ -22,9 +22,9 @@ Material:
     m_Floats:
     - _Absortion: 1
     - _Amplitude: 0.5
-    - _Coverage: 0.46547586
-    - _Density: 0.52065885
-    - _FrameCount: 2274
+    - _Coverage: 0.49531013
+    - _Density: 1
+    - _FrameCount: 1143
     - _Frequency: 1
     - _JitterEnabled: 1
     - _Lacunarity: 3
