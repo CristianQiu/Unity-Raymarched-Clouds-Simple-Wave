@@ -60,10 +60,8 @@ float Perlin3D(float3 P)
 	float3 Pf = P - Pi;
 	float3 Pf_min1 = Pf - 1.0;
 
-	//
 	//	classic noise.
 	//	requires 3 random values per point.  with an efficent hash function will run faster than improved noise
-	//
 
 	//	calculate the hash.
 	//	( various hashing methods listed in order of speed )
@@ -100,6 +98,7 @@ float InverseLerp(float val, float min, float max)
 float Remap(float val, float origMin, float origMax, float destMin, float destMax)
 {
 	float t = InverseLerp(val, origMin, origMax);
+
 	return lerp(destMin, destMax, t);
 }
 
@@ -125,11 +124,7 @@ float PerlinNormal(float3 p, float cutOff, int octaves, float3 offset, float fre
 	}
 
 	sum = Remap01(sum, 0.0, maxAmp);
-
-    if (sum < cutOff)
-        sum = 0.0;
-    else
-        Remap01(sum, cutOff, 1.0);
+	sum = sum * step(cutOff, sum);
 
     return sum;
 }

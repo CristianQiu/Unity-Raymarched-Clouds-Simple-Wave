@@ -30,8 +30,9 @@
 			"RenderType" = "Transparent" 
 		}
 
-		// No culling or depth
-		Cull Off ZWrite Off ZTest Always
+		Cull Off 
+		ZWrite Off 
+		ZTest Always
 		Blend SrcAlpha OneMinusSrcAlpha
 
 		Pass
@@ -84,7 +85,7 @@
 				return o;
 			}
 
-			float4 frag(v2f i) : SV_Target
+			half4 frag(v2f i) : SV_Target
 			{
 				float3 ro = _WorldSpaceCameraPos;
 				float3 rd = normalize(i.wPos - ro);
@@ -119,7 +120,7 @@
 
 				float4 o = march(ro, roJittered, rd, lightDir, sphereInfo, perlinInfo, cloudInfo);
 				
-				return float4(o.r, o.g, o.b, o.a);
+				return half4(o.rgba);
 			}
 
 			ENDCG

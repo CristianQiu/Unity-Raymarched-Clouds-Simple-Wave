@@ -72,12 +72,14 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
 
     float3 t1 = float3(0.0, 0.0, 0.0);
     float3 t2 = float3(0.0, 0.0, 0.0);
+
     bool intersectsSphere = raySphereIntersection(ro, rd, s, r, t1, t2);
 
     if (!intersectsSphere)
         return float4(0.0, 0.0, 0.0, 0.0);
 
     // set the number of raymarching steps, we are always taking the same number of samples inside the sphere no matter the distance traveled inside
+    // TODO: if the distance for each step is so small that is insignificant, we could probably get away with one sample...
     const int MarchSteps = 8;
     float distInsideSphere = distance(t1, t2);
     float marchStepSize = distInsideSphere / (float)MarchSteps;
@@ -88,23 +90,13 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
     float3 jitter = roJittered - ro;
     t1 += jitter * marchStepSize;
 
-    // TODO: if the distance for each step is so small that is insignificant, we could probably get away with one sample...
-
-    float accum = 0.0;
-    int numSamples = 0;
-
     float3 lightEnergy = float3(0.0f, 0.0f, 0.0f);
-
     float transmittance = 1.0;
-    float cloudDensity = 0.0;
-
-    cloudInfo.density *= MarchSteps;
-    cloudInfo.absortion *= MarchSteps;
 
     // march from the camera
     for (int i = 0; i < MarchSteps; i++)
     {
-        float fromCamSample = PerlinNormal(t1, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
+        float fromCamSample = PerlinNormal(t1, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence);
 
         if (fromCamSample > 0.01)
         {
@@ -122,13 +114,13 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
             // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
             for (int j = 0; j < MarchSteps; j++)
             {
-                float toLightSample = PerlinNormal(lightRayPos, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence).x;
+                float toLightSample = PerlinNormal(lightRayPos, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence);
                 accumToLight += (toLightSample * marchStepSizeToLight);
 
                 lightRayPos += (lightDir * marchStepSizeToLight);
             }
 
-            cloudDensity = saturate(fromCamSample * cloudInfo.density);
+            float cloudDensity = saturate(fromCamSample * cloudInfo.density);
 
             float atten = exp(-accumToLight * cloudInfo.absortion);
             float3 absorbedLight = atten * cloudDensity;

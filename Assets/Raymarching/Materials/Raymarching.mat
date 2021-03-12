@@ -20,11 +20,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - _Absortion: 0.11
+    - _Absortion: 1
     - _Amplitude: 0.5
-    - _Coverage: 0.4944278
-    - _Density: 0.1
-    - _FrameCount: 1241
+    - _Coverage: 0.46547586
+    - _Density: 0.52065885
+    - _FrameCount: 2274
     - _Frequency: 1
     - _JitterEnabled: 1
     - _Lacunarity: 3

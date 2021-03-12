@@ -9,7 +9,6 @@ public class Raymarching : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private Slider sunSpeedSlider = null;
-
     [SerializeField] private Slider coverageSlider = null;
     [SerializeField] private Slider densitySlider = null;
     [SerializeField] private Slider absortionSlider = null;
@@ -18,7 +17,6 @@ public class Raymarching : MonoBehaviour
 
     [Header("Components")]
     [SerializeField] private Transform sun = null;
-
     [SerializeField] private PostProcessLayer ppLayer = null;
     [SerializeField] private Transform sphere = null;
 

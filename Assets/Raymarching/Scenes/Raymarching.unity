@@ -1587,7 +1587,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.11
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1730,7 +1730,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706262185}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e46036a738c4b844eb505f108ff5268e, type: 3}
   m_Name: 
@@ -1821,13 +1821,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706262185}
-  m_LocalRotation: {x: 0.021218413, y: 0.6925711, z: -0.020388868, w: 0.72074914}
-  m_LocalPosition: {x: -6.04, y: -0.1257985, z: -0.37681326}
+  m_LocalRotation: {x: -0.20840897, y: 0.6633013, z: 0.2002624, w: 0.6902841}
+  m_LocalPosition: {x: -3.57, y: -2.11, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -33.6, y: 87.716, z: 0}
 --- !u!114 &706262191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3546,7 +3546,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 0.474
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3671,9 +3671,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1265840296}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 0.1
+  m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.1
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
