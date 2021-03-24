@@ -70,11 +70,11 @@ public class Wave : MonoBehaviour
 
         float furthestDist = float.MinValue;
 
-        for (int quadrant = 0; quadrant < 4; quadrant++)
+        for (int quadrant = 0; quadrant < 4; ++quadrant)
         {
-            for (int i = 0; i < maxGridDimensions.x / 2; i++)
+            for (int i = 0; i < maxGridDimensions.x / 2; ++i)
             {
-                for (int j = 0; j < maxGridDimensions.y / 2; j++)
+                for (int j = 0; j < maxGridDimensions.y / 2; ++j)
                 {
                     float x = j + (j * spacing) + (offsetX * 0.5f) + (spacing * 0.5f);
                     float z = i + (i * spacing) + (offsetZ * 0.5f) + (spacing * 0.5f);
@@ -128,7 +128,7 @@ public class Wave : MonoBehaviour
 
     private void DestroyWave()
     {
-        for (int i = waveObjs.Count - 1; i >= 0; i--)
+        for (int i = waveObjs.Count - 1; i >= 0; --i)
         {
             GameObject obj = waveObjs[i];
             Destroy(obj);

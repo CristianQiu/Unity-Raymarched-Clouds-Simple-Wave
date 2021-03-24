@@ -112,7 +112,7 @@ float PerlinNormal(float3 p, float cutOff, int octaves, float3 offset, float fre
 	float sum = 0.0;
 	float maxAmp = 0.0;
 
-	for (int i = 0; i < octaves; i++)
+	for (int i = 0; i < octaves; ++i)
 	{
         float h = Perlin3D((p + offset) * frequency);
 

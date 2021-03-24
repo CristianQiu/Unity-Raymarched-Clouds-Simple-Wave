@@ -94,7 +94,7 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
     float transmittance = 1.0;
 
     // march from the camera
-    for (int i = 0; i < MarchSteps; i++)
+    for (int i = 0; i < MarchSteps; ++i)
     {
         float fromCamSample = PerlinNormal(t1, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence);
 
@@ -112,7 +112,7 @@ float4 march(float3 ro, float3 roJittered, float3 rd, float3 lightDir, SphereInf
             float accumToLight = 0.0;
 
             // say goodbye to performance with the help of nested raymarching + perlin octaves :) 
-            for (int j = 0; j < MarchSteps; j++)
+            for (int j = 0; j < MarchSteps; ++j)
             {
                 float toLightSample = PerlinNormal(lightRayPos, perlinInfo.cutOff, perlinInfo.octaves, perlinInfo.offset, perlinInfo.freq, perlinInfo.amp, perlinInfo.lacunarity, perlinInfo.persistence);
                 accumToLight += (toLightSample * marchStepSizeToLight);
